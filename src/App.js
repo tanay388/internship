@@ -14,7 +14,8 @@ import {
   DialogContent,
   DialogTitle,
   DialogContentText,
-  useMediaQuery
+  useMediaQuery,
+  Checkbox
 } from '@mui/material'
 import { useTheme } from '@mui/material/styles';
 
@@ -44,6 +45,18 @@ function App() {
     setOpen(false);
   };
 
+  const handleTagsList = (event) => {
+    if(event.target.checked){
+      setTags([
+        ...tags,
+        event.target.name,
+      ]);
+    }else{
+      let filteredArray = tags.filter(item => item !== event.target.name)
+      setTags(filteredArray);
+    }
+  }
+
   const handleRadioChange =  (event) => {
     setCategory((event.target).value);
   }; 
@@ -57,14 +70,15 @@ function App() {
   useEffect(
     () => {
       getData()
-      console.log(page)
+      console.log(tags)
       
   }, [category, subCategory, page,tags, tagsQuery])
   
 
 
   const getData = () => {
-    const url =   `https://api.codingninjas.com/api/v3/events?event_category=${category}&event_sub_category=${subCategory}&tag_list=&offset=${page}`;
+    const tagqueryitems = "";
+    const url =   `https://api.codingninjas.com/api/v3/events?event_category=${category}&event_sub_category=${subCategory}&tag_list=${tags.join(',')}&offset=${page-1}`;
 
     axios.get(url).then( function(response) {
       if(response.data.data != null)
@@ -127,43 +141,56 @@ function App() {
                   />
                 </RadioGroup>
               </div>
+              <hr />
               <h2
                 className="sub-heading white"
                 style={{ color: "whitesmoke", fontSize: "20px" }}
-              > Chosse tags</h2>
+              >
+                {" "}
+                Chosse tags
+              </h2>
+
               <Button variant="outlined" onClick={handleClickOpen}>
-                Open responsive dialog
+                Show All Tags
               </Button>
+              <hr />
               <Dialog
-        fullScreen={fullScreen}
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="tags-list"
-      >
-        <DialogTitle id="responsive-dialog-title">
-          {"Use Google's location service?"}
-        </DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Choose The Tags to filter.
-          </DialogContentText>
-          <Container fluid="md">
-  <Row>
-    {tags_list.map( (tags) => {
-      <Col>1 of 1</Col>
-    })}
-  </Row>
-</Container>
-        </DialogContent>
-        <DialogActions>
-          <Button autoFocus onClick={handleClose}>
-            Disagree
-          </Button>
-          <Button onClick={handleClose} autoFocus>
-            Agree
-          </Button>
-        </DialogActions>
-      </Dialog>
+                fullScreen={fullScreen}
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="tags-list"
+              >
+                <DialogTitle id="responsive-dialog-title">
+                  {"Choose the tags for filtering?"}
+                </DialogTitle>
+                <DialogContent>
+                  <DialogContentText>
+                    Choose The Tags to filter.
+                  </DialogContentText>
+                  <Container fluid="md">
+                    <Row>
+                      {tags_list.map((elem) => {
+                        return(
+                        <Col><FormControlLabel
+                        control={
+                          <Checkbox
+                          checked= {tags.includes(elem)}
+                            onChange={handleTagsList}
+                            name={elem}
+                          />
+                        }
+                        label={elem}
+                      /></Col>);
+                      })}
+                    </Row>
+                  </Container>
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={handleClose} autoFocus>
+                    Done
+                  </Button>
+                </DialogActions>
+              </Dialog>
             </div>
           </Col>
 
@@ -202,14 +229,20 @@ function App() {
                 />
               </RadioGroup>
             </div>
-            <Row>
+            <Row style={{justifyContent: "space-between"}}>
               {eventlist.map((elem) => {
                 return (
-                  <Col sm={6} style={{ padding: "16px" }}>
+                  <Col sm={6} style={{ padding: "16px", justifySelf: "space-beetween" }}>
                     <Cards props={elem} />
                   </Col>
                 );
               })}
+
+              {() => {
+                if(eventlist.length <1){
+                  return(<h1>No {category} is under {subCategory} State.</h1>)
+                }
+              }}
             </Row>
           </Col>
           <Pagination

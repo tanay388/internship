@@ -17,37 +17,49 @@ function Cards(props) {
           margin: "10px !impoertant",
         }}
       >
-        <Card.Img variant="top" src={props.props.cover_picture} />
+        <Card.Img variant="top" style={{height: "160px"}} src={props.props.cover_picture} />
         <Card.Body>
           <Card.Title style={{ color: "black", fontSize: "24px" }}>
             {props.props.name}
           </Card.Title>
           <div className="badgedeadline">
-            Registration is open till{" "}
-            {Date(props.props.registration_end_time).toLocaleString("en-GB")}
+            Registration closes:{" "}
+            <strong>{Date(props.props.registration_end_time).toLocaleString("en-GB")}
+            </strong>
           </div>
           <div>
-            <div style={{ display: "inline-block" }}>
+            <Row>
+              <Col sm={4}>
               Starts On:
               <br />
-              {Date(props.props.event_start_time).toLocaleString("en-GB")}
-            </div>
-            <div style={{ display: "inline-block" }}>
+              <strong>{Date(props.props.event_start_time).toLocaleString("en-GB")}</strong>
+              </Col>
+              <Col sm={4}>
               Entry Fee:
               <br />
-              INR. {props.props.fees}
-            </div>
-            <div style={{ display: "inline-block" }}>
+              <strong>INR. {props.props.fees}</strong>
+              </Col>
+              <Col sm={4}>
               Venue:
               <br />
-              {props.props.venue}
-            </div>
+              <strong>{props.props.venue}</strong>
+              </Col>
+            </Row>
           </div>
+          <hr style={{width: "100%"}}/>
           <Card.Text>{props.props.short_desc}</Card.Text>
+
+          <div className='box-f' style={{flexDirection: 'row', justifyContent: 'space-evenly'}}>
+            {props.props.card_tags.map( (e) => {
+              return(<div style={{margin: "10px", backgroundColor: "rgb(207, 207, 207)"}} className='badgedeadline inline'>
+                {e}
+              </div>);
+            })}
+          </div>
         </Card.Body>
         <Card.Footer className="text-muted">
           <Row>
-            <Col xs={8}>
+            <Col sm={8}>
               <Stack direction="row" spacing={2}>
                   {props.props.registered_users.top_users.map( (elem) => {
                       return(
@@ -57,10 +69,11 @@ function Cards(props) {
                       )
                   })}
               </Stack>
-              And <strong>{props.props.registered_users.other_users_count}</strong> other are participating
+              And <strong>{props.props.registered_users.other_users_count}</strong> other are participating.
             </Col>
             <Col>
-              <Button variant="primary">Register Now</Button>
+                    <br />
+                    <Button disabled={props.props.event_sub_category !== "Upcoming"} variant="primary">Register Now</Button>         
             </Col>
           </Row>
         </Card.Footer>

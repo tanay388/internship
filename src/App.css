@@ -15,8 +15,12 @@
 .SideBar{
     min-width: 200px;
     width: 100%;
-    background-color: #f945ff;
+    background: url(./bgimage.png);
+    background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
     padding: 16px;
+    min-height: 100vh;
 }
 
 .RadioCategory{
@@ -29,12 +33,24 @@
     color: orangered !important;
 }
 .inline{
-    display: inline-block;
+    display: inline-block !important;
 }
 .fixed{
     position: fixed;
     top: 80px;
-    left: 0;
-    bottom: 0;
     padding: 20px;
 }
+
+.badgedeadline{
+    background-color: aliceblue;
+    border-radius: 5px;
+    padding: 12px;
+}
+
+@media only screen and (max-width: 600px) {
+    .fixed{
+        position: relative;
+        padding: 0;
+        top: 0;
+    }
+  }
